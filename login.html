@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="img/dynasty8.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion – Dynasty8</title>
+<link href="style.css" rel="stylesheet">
+<style>
+    .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+        filter: brightness(0.35);
+    }
+
+    .login-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(1,50,20,0.3) 100%);
+        z-index: 1;
+    }
+
+    .login-card {
+        position: relative;
+        z-index: 2;
+        background: rgba(20, 25, 38, 0.92);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 24px;
+        padding: 52px 48px;
+        width: 100%;
+        max-width: 440px;
+        box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+        box-sizing: border-box;
+        animation: fadeInUp 0.5s ease both;
+    }
+
+    .login-logo {
+        font-family: bloc, sans-serif;
+        font-size: 2.4rem;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 4px;
+        letter-spacing: 0.05em;
+    }
+
+    .login-logo span {
+        color: rgb(1, 176, 45);
+    }
+
+    .login-tagline {
+        text-align: center;
+        color: rgba(255,255,255,0.45);
+        font-size: 0.95rem;
+        margin-bottom: 36px;
+        letter-spacing: 0.02em;
+    }
+
+    .login-field {
+        margin-bottom: 20px;
+    }
+
+    .login-label {
+        display: block;
+        color: rgba(255,255,255,0.6);
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .login-input {
+        width: 100%;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        padding: 14px 18px;
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+        box-sizing: border-box;
+        transition: border-color 0.2s, background 0.2s;
+    }
+
+    .login-input:focus {
+        border-color: rgb(1, 176, 45);
+        background: rgba(1, 176, 45, 0.06);
+    }
+
+    .login-input.input-error {
+        border-color: rgb(220, 60, 60);
+        background: rgba(220, 60, 60, 0.06);
+        animation: shake 0.35s ease;
+    }
+
+    .login-input::placeholder {
+        color: rgba(255,255,255,0.25);
+    }
+
+    .login-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        margin-top: 4px;
+    }
+
+    .login-remember {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(255,255,255,0.5);
+        font-size: 0.88rem;
+        cursor: pointer;
+    }
+
+    .login-remember input[type="checkbox"] {
+        accent-color: rgb(1, 176, 45);
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+    }
+
+    .login-forgot {
+        color: rgb(1, 176, 45);
+        font-size: 0.88rem;
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+    .login-forgot:hover {
+        opacity: 0.75;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 15px;
+        background: rgb(1, 176, 45);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition: background 0.2s, transform 0.15s;
+        font-family: bloc, sans-serif;
+    }
+
+    .login-btn:hover {
+        background: rgb(1, 150, 38);
+        transform: translateY(-1px);
+    }
+
+    .login-btn:active {
+        transform: translateY(0);
+    }
+
+    .login-error {
+        display: none;
+        text-align: center;
+        padding: 12px 16px;
+        background: rgba(220, 60, 60, 0.12);
+        border: 1px solid rgba(220, 60, 60, 0.3);
+        border-radius: 10px;
+        color: rgb(255, 100, 100);
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-top: 14px;
+    }
+
+    .login-success {
+        display: none;
+        text-align: center;
+        padding: 18px;
+        background: rgba(1, 176, 45, 0.12);
+        border: 1px solid rgba(1, 176, 45, 0.3);
+        border-radius: 12px;
+        color: rgb(1, 176, 45);
+        font-size: 1rem;
+        font-weight: 600;
+        margin-top: 16px;
+    }
+
+    .login-divider {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 26px 0;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(255,255,255,0.1);
+    }
+
+    .login-divider span {
+        color: rgba(255,255,255,0.3);
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+    }
+
+    .login-register {
+        text-align: center;
+        color: rgba(255,255,255,0.45);
+        font-size: 0.9rem;
+    }
+
+    .login-register a {
+        color: rgb(1, 176, 45);
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.2s;
+    }
+
+    .login-register a:hover {
+        opacity: 0.75;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25%       { transform: translateX(-6px); }
+        75%       { transform: translateX(6px); }
+    }
+</style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+        <img src="img/wp8606700.jpg" alt="background" class="login-bg">
+        <div class="login-overlay"></div>
+
+        <div class="login-card">
+
+            <div class="login-logo">Dynasty<span>8</span></div>
+            <p class="login-tagline">Portail Agents & Clients</p>
+
+            <div class="login-field">
+                <label class="login-label">Identifiant</label>
+                <input type="text" id="inputUser" class="login-input" placeholder="Votre nom d'utilisateur">
+            </div>
+
+            <div class="login-field">
+                <label class="login-label">Mot de passe</label>
+                <input type="password" id="inputPass" class="login-input" placeholder="••••••••">
+            </div>
+
+            <div class="login-options">
+                <label class="login-remember">
+                    <input type="checkbox"> Se souvenir de moi
+                </label>
+                <a href="#" class="login-forgot">Mot de passe oublié ?</a>
+            </div>
+
+            <button class="login-btn" id="loginBtn" onclick="handleLogin()">SE CONNECTER</button>
+
+            <div class="login-error" id="errorMsg">
+                ⚠️ Veuillez remplir tous les champs.
+            </div>
+
+            <div class="login-success" id="successMsg">
+                ✅ Connexion réussie ! Redirection en cours…
+            </div>
+
+            <div class="login-divider"><span>OU</span></div>
+
+            <div class="login-register">
+                Pas encore de compte ? <a href="#">Créer un compte</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function handleLogin() {
+            const user    = document.getElementById('inputUser');
+            const pass    = document.getElementById('inputPass');
+            const btn     = document.getElementById('loginBtn');
+            const error   = document.getElementById('errorMsg');
+            const success = document.getElementById('successMsg');
+
+            // Reset state
+            user.classList.remove('input-error');
+            pass.classList.remove('input-error');
+            error.style.display  = 'none';
+            success.style.display = 'none';
+
+            const userEmpty = user.value.trim() === '';
+            const passEmpty = pass.value.trim() === '';
+
+            // Both fields must be filled
+            if (userEmpty || passEmpty) {
+                if (userEmpty) user.classList.add('input-error');
+                if (passEmpty) pass.classList.add('input-error');
+                error.style.display = 'block';
+
+                // Remove error highlight after animation
+                setTimeout(() => {
+                    user.classList.remove('input-error');
+                    pass.classList.remove('input-error');
+                }, 600);
+                return;
+            }
+
+            // Fields OK — proceed without credential check
+            btn.textContent  = 'Connexion…';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                success.style.display = 'block';
+                btn.textContent  = 'SE CONNECTER';
+                btn.style.opacity = '1';
+                btn.disabled = false;
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1800);
+            }, 1200);
+        }
+
+        // Allow Enter key to submit
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+    </script>
+
+</body>
+</html>
